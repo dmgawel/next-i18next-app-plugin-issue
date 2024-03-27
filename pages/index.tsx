@@ -1,6 +1,10 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import type { GetStaticProps, InferGetStaticPropsType } from 'next'
+import type {
+  GetServerSideProps,
+  GetStaticProps,
+  InferGetStaticPropsType,
+} from 'next'
 
 import { useTranslation, Trans } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -18,6 +22,8 @@ const Homepage = (
   const router = useRouter()
   const { t, i18n } = useTranslation('common')
 
+  console.log(t('h1', { count: 10 }))
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onToggleLanguageClick = (newLocale: string) => {
     const { pathname, asPath, query } = router
@@ -26,7 +32,7 @@ const Homepage = (
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const clientSideLanguageChange = (newLocale: string) => {
-    i18n.changeLanguage(newLocale);
+    i18n.changeLanguage(newLocale)
   }
 
   const changeTo = router.locale === 'en' ? 'de' : 'en'
@@ -35,7 +41,10 @@ const Homepage = (
   return (
     <>
       <main>
-        <Header heading={t('h1')} title={t('title')} />
+        <Header
+          heading={t('h1', { count: 10 })}
+          title={t('title')}
+        />
         <div style={{ display: 'inline-flex', width: '90%' }}>
           <div style={{ width: '33%' }}>
             <h3 style={{ minHeight: 70 }}>
@@ -44,8 +53,7 @@ const Homepage = (
             <p>
               <Trans i18nKey="blog.appDir.answer">
                 Then check out
-                <a href={t('blog.appDir.link')}>this blog post</a>
-                .
+                <a href={t('blog.appDir.link')}>this blog post</a>.
               </Trans>
             </p>
             <a href={t('blog.appDir.link')}>
@@ -116,15 +124,18 @@ const Homepage = (
 }
 
 // or getServerSideProps: GetServerSideProps<Props> = async ({ locale })
-export const getStaticProps: GetStaticProps<Props> = async ({
+export const getServerSideProps: GetServerSideProps<Props> = async ({
   locale,
-}) => ({
-  props: {
-    ...(await serverSideTranslations(locale ?? 'en', [
-      'common',
-      'footer',
-    ])),
-  },
-})
+}) => {
+  const trans = await serverSideTranslations(locale ?? 'en', [
+    'common',
+    'footer',
+  ])
+  return {
+    props: {
+      ...trans,
+    },
+  }
+}
 
 export default Homepage

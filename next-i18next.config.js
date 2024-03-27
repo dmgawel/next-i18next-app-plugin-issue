@@ -5,7 +5,7 @@
  */
 module.exports = {
   // https://www.i18next.com/overview/configuration-options#logging
-  debug: process.env.NODE_ENV === 'development',
+  debug: false,
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'de'],
@@ -23,6 +23,7 @@ module.exports = {
    */
   // saveMissing: false,
   // strictMode: true,
-  // serializeConfig: false,
+  serializeConfig: false,
+  use: [],
   // react: { useSuspense: false }
 }
